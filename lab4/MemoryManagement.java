@@ -4,11 +4,6 @@ import java.applet.*;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import ControlPanel;
-import PageFault;
-import Virtual2Physical;
-import Common;
-import Page;
 
 public class MemoryManagement 
 {
@@ -17,13 +12,10 @@ public class MemoryManagement
     ControlPanel controlPanel;
     Kernel kernel;
 
-    if ( args.length < 1 || args.length > 2 ) 
-    {
-      System.out.println( "Usage: 'java MemoryManagement <COMMAND FILE> <PROPERTIES FILE>'" );
-      System.exit( -1 );
-    } 
+    String command = "commands";
+    String memory = "memory.conf";
 
-    File f = new File( args[0] );
+    File f = new File( command );
 
     if ( ! ( f.exists() ) ) 
     {
@@ -38,7 +30,7 @@ public class MemoryManagement
 
     if ( args.length == 2 ) 
     {
-      f = new File( args[1] );
+      f = new File( memory );
 
       if ( ! ( f.exists() ) ) 
       {
@@ -56,11 +48,11 @@ public class MemoryManagement
     controlPanel = new ControlPanel( "Memory Management" );
     if ( args.length == 1 ) 
     {
-      controlPanel.init( kernel , args[0] , null );
+      controlPanel.init( kernel , command , null );
     }
     else
     {
-      controlPanel.init( kernel , args[0] , args[1] );
+      controlPanel.init( kernel , command , memory );
     }
   }
 }

@@ -1,7 +1,6 @@
 import java.lang.Thread;
 import java.io.*;
 import java.util.*;
-import Page;
 
 public class Kernel extends Thread
 {
@@ -348,8 +347,8 @@ public class Kernel extends Thread
 
   public void getPage(int pageNum) 
   {
-    Page page = ( Page ) memVector.elementAt( pageNum );
-    controlPanel.paintPage( page );
+    Page page =(Page)memVector.elementAt(pageNum);
+    controlPanel.paintPage(page);
   }
 
   private void printLogFile(String message)

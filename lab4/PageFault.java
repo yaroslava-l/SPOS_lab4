@@ -8,7 +8,6 @@
   // Algorithm as described in the Memory Management section.
 
 import java.util.*;
-import Page;
 
 public class PageFault {
 
@@ -52,36 +51,41 @@ public class PageFault {
    */
   public static void replacePage ( Vector mem , int virtPageNum , int replacePageNum , ControlPanel controlPanel ) 
   {
-    int count = 0;
-    int oldestPage = -1;
-    int oldestTime = 0;
-    int firstPage = -1;
-    int map_count = 0;
-    boolean mapped = false;
+    int count=0;
+    int[] oldestPage = {-1,4};
 
-    while ( ! (mapped) || count != virtPageNum ) {
-      Page page = ( Page ) mem.elementAt( count );
-      if ( page.physical != -1 ) {
-        if (firstPage == -1) {
-          firstPage = count;
-        }
-        if (page.inMemTime > oldestTime) {
-          oldestTime = page.inMemTime;
-          oldestPage = count;
-          mapped = true;
+
+    for(count=0;count<=mem.size();count++) {
+      Page page = (Page) mem.elementAt(count);
+      if (page.R == 0 && page.M == 0) {
+        oldestPage[0] = page.id;
+        oldestPage[1] = 1;
+        break;
+      }
+      if (page.R == 0 && page.M == 1) {
+        if (oldestPage[1] > 2) {
+          oldestPage[0] = page.id;
+          oldestPage[1] = 2;
         }
       }
-      count++;
-      if ( count == virtPageNum ) {
-        mapped = true;
+      if (page.R == 1 && page.M == 0) {
+        if (oldestPage[1] > 3) {
+          oldestPage[0] = page.id;
+          oldestPage[1] = 3;
+        }
+      }
+      if (page.R == 1 && page.M == 1) {
+        if (oldestPage[1] >= 4) {
+          oldestPage[0] = page.id;
+          oldestPage[1] = 4;
+        }
       }
     }
-    if (oldestPage == -1) {
-      oldestPage = firstPage;
-    }
-    Page page = ( Page ) mem.elementAt( oldestPage );
+
+
+    Page page = ( Page ) mem.elementAt( oldestPage[0] );
     Page nextpage = ( Page ) mem.elementAt( replacePageNum );
-    controlPanel.removePhysicalPage( oldestPage );
+    controlPanel.removePhysicalPage( oldestPage[0] );
     nextpage.physical = page.physical;
     controlPanel.addPhysicalPage( nextpage.physical , replacePageNum );
     page.inMemTime = 0;
